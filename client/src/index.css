@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Mobile screen ke liye (max-width: 768px) */
+@media (max-width: 768px) {
+  .container, .dashboard-layout {
+    flex-direction: column !important;
+    width: 100% !important;
+    padding: 10px !important;
+  }
+  sidebar, .sidebar {
+    display: none; /* Ya mobile menu drawer */
+  }
+}
