@@ -55,7 +55,7 @@ const EmployeeManagement = () => {
     const fetchEmployees = async () => {
       try {
         const response = await fetch(
-          'https://employee-management-system-1-6sdi.onrender.com/api/employees'
+          'https://employee-management-system-p1ci.onrender.com/api/employees'
         );
 
         if (!response.ok) {

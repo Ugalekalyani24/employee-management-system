@@ -13,7 +13,7 @@ const AttendanceLeave = () => {
   // Fetch Leaves
   const fetchLeaves = async () => {
     try {
-      const res = awaitfetch('https://employee-management-system-1-6sdi.onrender.com/api/leaves');
+      const res = awaitfetch('https://employee-management-system-p1ci.onrender.com/api/leaves');
       if (res.ok) {
         const data = await res.json();
         setLeaveRequests(data);
@@ -31,7 +31,7 @@ const AttendanceLeave = () => {
   const handlePunch = async () => {
     const type = punchedIn ? 'out' : 'in';
     try {
-      const res = await fetch('https://employee-management-system-1-6sdi.onrender.com/api/attendance/punch', {
+      const res = await fetch('employee-management-system-p1ci.onrender.com/api/attendance/punch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: currentUser.id, type }),
@@ -50,7 +50,7 @@ const AttendanceLeave = () => {
   const handleLeaveSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('https://employee-management-system-1-6sdi.onrender.com/api/leaves/request', {
+      const res = await fetch('https://employee-management-system-p1ci.onrender.com/api/leaves/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -72,7 +72,7 @@ const AttendanceLeave = () => {
   // Admin One-Click Action (Approve / Reject)
   const handleStatusUpdate = async (id, status) => {
     try {
-      const res = await fetch(`https://employee-management-system-1-6sdi.onrender.com/api/leaves/${id}/status`, {
+      const res = await fetch(`https://employee-management-system-p1ci.onrender.com/api/leaves/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),

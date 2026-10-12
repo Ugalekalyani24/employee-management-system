@@ -28,7 +28,7 @@ const Dashboard = ({ onLogout }) => {
         const token = localStorage.getItem("token");
         const headers = { Authorization: `Bearer ${token}` };
 
-        const empRes = await fetch("https://employee-management-system-1-6sdi.onrender.com/api/employees", { headers });
+        const empRes = await fetch("https:/employee-management-system-p1ci.onrender.com//api/employees", { headers });
         if (empRes.ok) {
           const empData = await empRes.json();
           setEmployees(empData);
