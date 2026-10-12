@@ -55,7 +55,7 @@ const EmployeeManagement = () => {
     const fetchEmployees = async () => {
       try {
         const response = await fetch(
-          'http://localhost:5000/api/employees'
+          'https://employee-management-system-1-6sdi.onrender.com/api/employees'
         );
 
         if (!response.ok) {
@@ -119,9 +119,8 @@ const EmployeeManagement = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        'http://localhost:5000/api/employees',
-        {
+      const response = await fetch('https://employee-management-system-1-6sdi.onrender.com/api/auth/login', {
+        
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

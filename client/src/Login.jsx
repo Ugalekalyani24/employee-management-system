@@ -10,8 +10,7 @@ const Login = ({ onLoginSuccess }) => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
+      const response = await fetch('https://employee-management-system-1-6sdi.onrender.com/api/auth/login', {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });

@@ -14,7 +14,7 @@ const Payroll = () => {
 
   const fetchPayroll = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/payroll');
+      const res = await fetch('https://employee-management-system-1-6sdi.onrender.com/api/payroll');
       if (res.ok) {
         const data = await res.json();
         setPayrollList(data);
@@ -31,7 +31,7 @@ const Payroll = () => {
   const handleGeneratePayroll = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5000/api/payroll', {
+      const res = await fetch('https://employee-management-system-1-6sdi.onrender.com/api/payroll', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -50,7 +50,7 @@ const Payroll = () => {
 
   const handleStatusChange = async (id, status) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/payroll/${id}/status`, {
+      const res = await fetch(`https://employee-management-system-1-6sdi.onrender.com/api/payroll/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
