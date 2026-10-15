@@ -5,7 +5,7 @@ const JobApplications = () => {
   const [applications, setApplications] = useState([]);
 
   useEffect(() => {
-    fetch('https://employee-management-system-1-6sdi.onrender.com/api/applications')
+    fetch('https://employee-management-system-p1ci.onrender.com/api/applications')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to fetch applications');
@@ -34,7 +34,7 @@ const JobApplications = () => {
 
     try {
       const response = await fetch(
-        `https://employee-management-system-1-6sdi.onrender.com/api/applications/${app.dbId}/status`,
+        `https://employee-management-system-p1ci.onrender.com/api/applications/${app.dbId}/status`,
         {
           method: 'PUT',
           headers: {

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 const Login = ({ onLoginSuccess }) => {
@@ -10,10 +11,14 @@ const Login = ({ onLoginSuccess }) => {
     setError('');
 
     try {
-      const response = await fetch('https://employee-management-system-1-6sdi.onrender.com/api/auth/login', {
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        'https://employee-management-system-p1ci.onrender.com/api/auth/login',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
 
@@ -26,7 +31,8 @@ const Login = ({ onLoginSuccess }) => {
         setError(data.message || 'Invalid Email or Password');
       }
     } catch (err) {
-      setError('Backend server not reachable. Start server on port 5000.');
+      console.error('Login request failed:', err);
+      setError('Backend connection failed. Please try again.');
     }
   };
 
@@ -76,17 +82,58 @@ const Login = ({ onLoginSuccess }) => {
 };
 
 const styles = {
-  container: { display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#1e293b' },
-  card: { width: '100%', maxWidth: '400px', padding: '32px', backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)' },
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#1e293b',
+  },
+  card: {
+    width: '100%',
+    maxWidth: '400px',
+    padding: '32px',
+    backgroundColor: '#ffffff',
+    borderRadius: '12px',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+  },
   header: { textAlign: 'center', marginBottom: '24px' },
-  title: { fontSize: '24px', fontWeight: '700', color: '#0f172a', margin: '8px 0 4px' },
+  title: {
+    fontSize: '24px',
+    fontWeight: '700',
+    color: '#0f172a',
+    margin: '8px 0 4px',
+  },
   subtitle: { fontSize: '14px', color: '#64748b', margin: 0 },
-  errorBox: { backgroundColor: '#fee2e2', color: '#991b1b', padding: '10px 14px', borderRadius: '6px', fontSize: '14px', marginBottom: '16px', textAlign: 'center' },
+  errorBox: {
+    backgroundColor: '#fee2e2',
+    color: '#991b1b',
+    padding: '10px 14px',
+    borderRadius: '6px',
+    fontSize: '14px',
+    marginBottom: '16px',
+    textAlign: 'center',
+  },
   form: { display: 'flex', flexDirection: 'column', gap: '16px' },
   inputGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
   label: { fontSize: '14px', fontWeight: '600', color: '#334155' },
-  input: { padding: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px' },
-  button: { padding: '12px', backgroundColor: '#1d4ed8', color: '#ffffff', border: 'none', borderRadius: '6px', fontSize: '16px', fontWeight: '600', cursor: 'pointer', marginTop: '8px' },
+  input: {
+    padding: '12px',
+    borderRadius: '6px',
+    border: '1px solid #cbd5e1',
+    fontSize: '14px',
+  },
+  button: {
+    padding: '12px',
+    backgroundColor: '#1d4ed8',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '6px',
+    fontSize: '16px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    marginTop: '8px',
+  },
 };
 
 export default Login;

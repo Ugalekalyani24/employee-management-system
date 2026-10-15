@@ -16,7 +16,7 @@ const [payroll, setPayroll] = useState(null);
 useEffect(() => {
   const fetchPayroll = async () => {
     try {
-      const response = await fetch("https://employee-management-system-1-6sdi.onrender.com/api/payroll");
+      const response = await fetch("https://employee-management-system-p1ci.onrender.com/api/payroll");
 
       if (!response.ok) {
         throw new Error("Payroll data fetch failed");
@@ -61,7 +61,7 @@ const [profile, setProfile] = useState({
     const fetchLatestProfile = async () => {
       try {
         const token = localStorage.getItem("token"); // agar token use kar rahe ho
-        const res = await axios.get("https://employee-management-system-1-6sdi.onrender.com/api/employee/me", {
+        const res = await axios.get("https://employee-management-system-p1ci.onrender.com/api/employees", {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.data) {
@@ -115,7 +115,7 @@ const [profile, setProfile] = useState({
   // API Attendance Punch
   const handlePunch = async (type) => {
     try {
-      const response = await fetch("https://employee-management-system-1-6sdi.onrender.com/api/attendance/punch", {
+      const response = await fetch("https://employee-management-system-p1ci.onrender.com/api/attendance/punch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: savedUser.id || 1001, type }),
@@ -162,7 +162,7 @@ const [profile, setProfile] = useState({
 
   const fetchLeaves = async () => {
     try {
-      const res = await fetch("https://employee-management-system-1-6sdi.onrender.com/api/leaves");
+      const res = await fetch("https://employee-management-system-p1ci.onrender.com/api/leaves");
       if (res.ok) {
         const data = await res.json();
         const userLeaves = data.filter(
@@ -188,7 +188,7 @@ const [profile, setProfile] = useState({
     setLeaveMessage("");
 
     try {
-      const response = await fetch("https://employee-management-system-1-6sdi.onrender.com/api/leaves/request", {
+      const response = await fetch("https://employee-management-system-p1ci.onrender.com/api/leaves/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

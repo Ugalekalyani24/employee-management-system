@@ -13,7 +13,7 @@ const AttendanceLeave = () => {
   // Fetch Leaves
   const fetchLeaves = async () => {
     try {
-      const res = awaitfetch('https://employee-management-system-p1ci.onrender.com/api/leaves');
+      const res = await fetch('https://employee-management-system-p1ci.onrender.com/api/leaves');
       if (res.ok) {
         const data = await res.json();
         setLeaveRequests(data);
@@ -31,7 +31,7 @@ const AttendanceLeave = () => {
   const handlePunch = async () => {
     const type = punchedIn ? 'out' : 'in';
     try {
-      const res = await fetch('employee-management-system-p1ci.onrender.com/api/attendance/punch', {
+      const res = await fetch('https://employee-management-system-p1ci.onrender.com/api/attendance/punch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: currentUser.id, type }),

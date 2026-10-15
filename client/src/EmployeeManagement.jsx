@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 const EmployeeManagement = () => {
@@ -114,23 +113,21 @@ const EmployeeManagement = () => {
     indexOfLastItem
   );
 
-  // Add employee to database
+  // Add employee to database (FIXED URL TO /api/employees)
   const handleAddEmployee = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://employee-management-system-1-6sdi.onrender.com/api/auth/login', {
-        
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            ...formData,
-            salary: Number(formData.salary) || 0
-          })
-        }
-      );
+      const response = await fetch('https://employee-management-system-p1ci.onrender.com/api/employees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          salary: Number(formData.salary) || 0
+        })
+      });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -228,7 +225,7 @@ const EmployeeManagement = () => {
               </tr>
             ) : (
               currentItems.map((emp, index) => (
-                <tr key={emp.id}>
+                <tr key={emp.id || index}>
                   <td style={tdStyle}>
                     EMP-
                     {String(indexOfFirstItem + index + 1).padStart(4, '0')}
