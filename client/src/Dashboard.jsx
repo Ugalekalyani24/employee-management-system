@@ -10,9 +10,9 @@ const Dashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [employees, setEmployees] = useState([]);
   const [stats, setStats] = useState({
-    totalEmployees: 10,
-    openVacancies: 0,
-    jobApplications: 0,
+    totalEmployees: 11,
+    openVacancies: 5,
+    jobApplications: 5,
     pendingLeaves: 2,
   });
 
@@ -28,11 +28,13 @@ const Dashboard = ({ onLogout }) => {
         const token = localStorage.getItem("token");
         const headers = { Authorization: `Bearer ${token}` };
 
-        const empRes = await fetch("https:/employee-management-system-p1ci.onrender.com//api/employees", { headers });
+        const empRes = await fetch("https://employee-management-system-p1ci.onrender.com/api/employees", { headers });
         if (empRes.ok) {
           const empData = await empRes.json();
-          setEmployees(empData);
-          setStats((prev) => ({ ...prev, totalEmployees: empData.length }));
+          if (empData && empData.length > 0) {
+            setEmployees(empData);
+            setStats((prev) => ({ ...prev, totalEmployees: empData.length }));
+          }
         }
       } catch (err) {
         console.error("Error fetching stats:", err);
@@ -193,9 +195,9 @@ const Dashboard = ({ onLogout }) => {
             {activeTab === "employees" && <EmployeeManagement />}
             {activeTab === "vacancies" && <JobVacancies />}
             {activeTab === "applications" && <JobApplications />}
-           {activeTab === "analytics" && (
-  <Analytics employees={employees} />
-)}
+            {activeTab === "analytics" && (
+              <Analytics employees={employees} />
+            )}
           </>
         )}
       </main>

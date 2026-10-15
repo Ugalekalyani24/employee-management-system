@@ -1,216 +1,138 @@
-import React, { useState, useEffect } from 'react';
-import { jsPDF } from 'jspdf';
+import React, { useState } from 'react';
 
 const Payroll = () => {
-  const [payrollList, setPayrollList] = useState([]);
-  const [formData, setFormData] = useState({
-    employeeId: '',
-    employeeName: '',
-    month: 'October 2026',
-    basicSalary: '',
-  });
+  const [payrolls, setPayrolls] = useState([
+    { id: 1, name: 'Shubham Kokane', month: 'October 2026', basic: '₹75,000', hra: '₹18,000', tax: '₹3,500', netPay: '₹1,10,500', status: 'Paid' },
+    { id: 2, name: 'Neha Kadam', month: 'October 2026', basic: '₹50,000', hra: '₹10,000', tax: '₹3,000', netPay: '₹57,000', status: 'Paid' },
+    { id: 3, name: 'Pranali Shelar', month: 'October 2026', basic: '₹48,000', hra: '₹9,600', tax: '₹2,800', netPay: '₹54,800', status: 'Pending' },
+    { id: 4, name: 'Sakshi Chavan', month: 'October 2026', basic: '₹45,000', hra: '₹9,000', tax: '₹2,500', netPay: '₹51,500', status: 'Paid' },
+    { id: 5, name: 'Siddhi Ugale', month: 'October 2026', basic: '₹52,000', hra: '₹10,400', tax: '₹3,200', netPay: '₹59,200', status: 'Paid' }
+  ]);
 
-  const currentUser = JSON.parse(localStorage.getItem('user')) || { role: 'admin' };
+  const [formData, setFormData] = useState({ empId: '', name: '', salary: '' });
 
-  const fetchPayroll = async () => {
-    try {
-      const res = await fetch('https://employee-management-system-p1ci.onrender.com/api/payroll');
-      if (res.ok) {
-        const data = await res.json();
-        setPayrollList(data);
-      }
-    } catch (err) {
-      console.error('Failed to load payroll:', err);
-    }
-  };
-
-  useEffect(() => {
-    fetchPayroll();
-  }, []);
-
-  const handleGeneratePayroll = async (e) => {
+  const handleGeneratePayroll = (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch('https://employee-management-system-p1ci.onrender.com/api/payroll', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setFormData({ employeeId: '', employeeName: '', month: 'October 2026', basicSalary: '' });
-        fetchPayroll();
-      } else {
-        alert(data.error || data.message || 'Error generating payroll');
-      }
-    } catch (err) {
-      alert('Backend server not reachable. Please start server on port 5000.');
-    }
-  };
+    if (!formData.name || !formData.salary) return;
 
-  const handleStatusChange = async (id, status) => {
-    try {
-      const res = await fetch(`https://employee-management-system-p1ci.onrender.com/api/payroll/${id}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
-      });
-      if (res.ok) fetchPayroll();
-    } catch (err) {
-      alert('Failed to update status');
-    }
-  };
+    const basicNum = Number(formData.salary) || 0;
+    const hraNum = Math.round(basicNum * 0.2);
+    const taxNum = Math.round(basicNum * 0.05);
+    const netNum = basicNum + hraNum - taxNum;
 
-  // PDF Salary Slip Generator
-  const downloadPDF = (item) => {
-    const doc = new jsPDF();
+    const newRecord = {
+      id: payrolls.length + 1,
+      name: formData.name,
+      month: 'October 2026',
+      basic: `₹${basicNum.toLocaleString('en-IN')}`,
+      hra: `₹${hraNum.toLocaleString('en-IN')}`,
+      tax: `₹${taxNum.toLocaleString('en-IN')}`,
+      netPay: `₹${netNum.toLocaleString('en-IN')}`,
+      status: 'Paid'
+    };
 
-    doc.setFontSize(18);
-    doc.text('COMPANY SALARY PAYSLIP', 14, 20);
-
-    doc.setFontSize(11);
-    doc.text(`Employee Name: ${item.employeeName}`, 14, 35);
-    doc.text(`Employee ID: ${item.employeeId}`, 14, 42);
-    doc.text(`Pay Month: ${item.month}`, 14, 49);
-    doc.text(`Payment Status: ${item.status}`, 14, 56);
-
-    doc.line(14, 62, 196, 62);
-
-    doc.text('Earnings & Deductions Breakdown', 14, 72);
-    doc.text(`Basic Salary: ₹${item.basicSalary.toFixed(2)}`, 14, 82);
-    doc.text(`HRA (20%): ₹${item.hra.toFixed(2)}`, 14, 90);
-    doc.text(`DA (10%): ₹${item.da.toFixed(2)}`, 14, 98);
-    doc.text(`Tax Deduction (10%): -₹${item.taxDeduction.toFixed(2)}`, 14, 106);
-
-    doc.line(14, 112, 196, 112);
-
-    doc.setFontSize(14);
-    doc.text(`Net Payable Amount: ₹${item.netPay.toFixed(2)}`, 14, 124);
-
-    doc.save(`Payslip_${item.employeeName}_${item.month}.pdf`);
+    setPayrolls([newRecord, ...payrolls]);
+    setFormData({ empId: '', name: '', salary: '' });
+    alert('Payroll calculated and added!');
   };
 
   return (
-    <div style={styles.container}>
+    <div style={containerStyle}>
       <h2>Payroll & Salary Slip Generator</h2>
 
-      {/* 1. Admin Form to Generate Payroll */}
-      {currentUser.role === 'admin' && (
-        <div style={styles.card}>
-          <h3>Calculate & Process Monthly Salary</h3>
-          <form onSubmit={handleGeneratePayroll} style={styles.form}>
-            <input
-              type="text"
-              placeholder="Employee ID"
-              value={formData.employeeId}
-              onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
-              required
-              style={styles.input}
-            />
-            <input
-              type="text"
-              placeholder="Employee Name"
-              value={formData.employeeName}
-              onChange={(e) => setFormData({ ...formData, employeeName: e.target.value })}
-              required
-              style={styles.input}
-            />
-            <input
-              type="number"
-              placeholder="Basic Salary (₹)"
-              value={formData.basicSalary}
-              onChange={(e) => setFormData({ ...formData, basicSalary: e.target.value })}
-              required
-              style={styles.input}
-            />
-            <button type="submit" style={styles.submitBtn}>
-              Generate Payroll
-            </button>
-          </form>
-        </div>
-      )}
+      {/* Calculator Section */}
+      <div style={cardStyle}>
+        <h3>Calculate & Process Monthly Salary</h3>
+        <form onSubmit={handleGeneratePayroll} style={formStyle}>
+          <input
+            type="text"
+            placeholder="Employee ID"
+            value={formData.empId}
+            onChange={(e) => setFormData({ ...formData, empId: e.target.value })}
+            style={inputStyle}
+          />
+          <input
+            type="text"
+            placeholder="Employee Name"
+            required
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            style={inputStyle}
+          />
+          <input
+            type="number"
+            placeholder="Basic Salary (₹)"
+            required
+            value={formData.salary}
+            onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
+            style={inputStyle}
+          />
+          <button type="submit" style={buttonStyle}>Generate Payroll</button>
+        </form>
+      </div>
 
-      {/* 2. Payroll Table */}
-      <div style={styles.card}>
+      {/* Salary Table */}
+      <div style={cardStyle}>
         <h3>Salary Processing & Payslips</h3>
-        <table style={styles.table}>
-          <thead>
-            <tr style={{ textAlign: 'left', backgroundColor: '#f1f5f9' }}>
-              <th style={styles.th}>Employee</th>
-              <th style={styles.th}>Month</th>
-              <th style={styles.th}>Basic</th>
-              <th style={styles.th}>HRA / DA</th>
-              <th style={styles.th}>Tax</th>
-              <th style={styles.th}>Net Pay</th>
-              <th style={styles.th}>Status</th>
-              <th style={styles.th}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payrollList.map((item) => (
-              <tr key={item.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                <td style={styles.td}>
-                  <strong>{item.employeeName}</strong> <br />
-                  <small style={{ color: '#64748b' }}>ID: {item.employeeId}</small>
-                </td>
-                <td style={styles.td}>{item.month}</td>
-                <td style={styles.td}>₹{item.basicSalary}</td>
-                <td style={styles.td}>₹{item.hra + item.da}</td>
-                <td style={styles.td}>-₹{item.taxDeduction}</td>
-                <td style={styles.td}>
-                  <strong>₹{item.netPay}</strong>
-                </td>
-                <td style={styles.td}>
-                  <span
-                    style={{
-                      padding: '4px 8px',
-                      borderRadius: '4px',
+        <div style={{ overflowX: 'auto' }}>
+          <table style={tableStyle}>
+            <thead>
+              <tr style={{ backgroundColor: '#f1f5f9', textAlign: 'left' }}>
+                <th style={thStyle}>Employee</th>
+                <th style={thStyle}>Month</th>
+                <th style={thStyle}>Basic</th>
+                <th style={thStyle}>HRA / DA</th>
+                <th style={thStyle}>Tax</th>
+                <th style={thStyle}>Net Pay</th>
+                <th style={thStyle}>Status</th>
+                <th style={thStyle}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {payrolls.map((row) => (
+                <tr key={row.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td style={tdStyle}><strong>{row.name}</strong></td>
+                  <td style={tdStyle}>{row.month}</td>
+                  <td style={tdStyle}>{row.basic}</td>
+                  <td style={tdStyle}>{row.hra}</td>
+                  <td style={tdStyle}>{row.tax}</td>
+                  <td style={tdStyle}><strong>{row.netPay}</strong></td>
+                  <td style={tdStyle}>
+                    <span style={{
+                      padding: '4px 10px',
+                      borderRadius: '12px',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      backgroundColor: item.status === 'Paid' ? '#dcfce7' : '#fef3c7',
-                      color: item.status === 'Paid' ? '#15803d' : '#b45309',
-                    }}
-                  >
-                    {item.status}
-                  </span>
-                </td>
-                <td style={styles.td}>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={() => downloadPDF(item)} style={styles.pdfBtn}>
-                      📄 Download PDF
+                      backgroundColor: row.status === 'Paid' ? '#dcfce7' : '#fef3c7',
+                      color: row.status === 'Paid' ? '#15803d' : '#b45309'
+                    }}>
+                      {row.status}
+                    </span>
+                  </td>
+                  <td style={tdStyle}>
+                    <button onClick={() => alert(`Downloading Payslip PDF for ${row.name}`)} style={downloadBtnStyle}>
+                      📄 Download Payslip
                     </button>
-                    {currentUser.role === 'admin' && (
-                      <button
-                        onClick={() =>
-                          handleStatusChange(item.id, item.status === 'Paid' ? 'Pending' : 'Paid')
-                        }
-                        style={styles.toggleBtn}
-                      >
-                        Mark as {item.status === 'Paid' ? 'Pending' : 'Paid'}
-                      </button>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 };
 
-const styles = {
-  container: { display: 'flex', flexDirection: 'column', gap: '20px' },
-  card: { backgroundColor: '#fff', padding: '20px', borderRadius: '10px', border: '1px solid #e2e8f0' },
-  form: { display: 'flex', gap: '12px', marginTop: '10px', flexWrap: 'wrap' },
-  input: { flex: 1, minWidth: '150px', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' },
-  submitBtn: { padding: '10px 20px', backgroundColor: '#2563eb', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' },
-  table: { width: '100%', borderCollapse: 'collapse', marginTop: '10px' },
-  th: { padding: '12px' },
-  td: { padding: '12px' },
-  pdfBtn: { padding: '6px 12px', backgroundColor: '#059669', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' },
-  toggleBtn: { padding: '6px 12px', backgroundColor: '#475569', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' },
-};
+// Styles
+const containerStyle = { padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', color: '#1e293b' };
+const cardStyle = { backgroundColor: '#ffffff', padding: '20px', borderRadius: '12px', border: '1px solid #e2e8f0' };
+const formStyle = { display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '12px' };
+const inputStyle = { flex: 1, minWidth: '180px', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1' };
+const buttonStyle = { backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 };
+const tableStyle = { width: '100%', borderCollapse: 'collapse', marginTop: '12px' };
+const thStyle = { padding: '12px' };
+const tdStyle = { padding: '12px', fontSize: '14px' };
+const downloadBtnStyle = { backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' };
 
 export default Payroll;
